@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -22,7 +21,16 @@ public class Main {
         System.out.println(set.containsMultipleTimes("asdf"));
         set.remove("dsf");
         System.out.println(set);
+        System.out.println(((TUMSetImplementation<String>) set).getLargestValue());
         set.clear();
+        set.add("asd.asd@in.tum.de");
+        set.add("asd.asd@tum.de");
+        set.add("asd.s2asd@in.tum.de");
+        set.add("asd.asd@in.um.de");
+        set.add("asd.asd@in.tum.dewefwef");
+        System.out.println(((TUMSetImplementation<String>) set).getValuesMatching());
+
+
 
         System.out.println("\t[Working with map]\n");
         map.put("key1", "sert");
@@ -39,8 +47,13 @@ public class Main {
         System.out.println(map.containsKey("key3"));
         System.out.println(map.containsValue("sdfsdfrt"));
         System.out.println(map.containsValue("asdasdasd"));
-
-
+        System.out.println(((TUMMapImplementation<String, String>)map).getValueForLargestKey());
+        map.clear();
+        map.put("1", "de345fr");
+        map.put("4", "de34efr");
+        map.put("2", "de34fefr");
+        map.put("3", "de345frsss");
+        System.out.println(((TUMMapImplementation<String, String>)map).getKeysForMatchingValues());
 
 
     }
