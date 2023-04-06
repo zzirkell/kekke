@@ -1,7 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
-public class TUMMapImplementation<K,V> implements TUMMap<K,V>{
+public class TUMMapImplementation<K extends Comparable<K>,V> implements TUMMap<K,V>{
     private ArrayList<Entry<K,V>> entries;
 
     public TUMMapImplementation(ArrayList<Entry<K,V>> entries) {
@@ -48,11 +49,16 @@ public class TUMMapImplementation<K,V> implements TUMMap<K,V>{
 
     @Override
     public V put(K key, V value) {
-        entries.add(new Entry<>(key, value));
-        for (int i = entries.size()-2; i >= 0; i--) {
-            if (entries.get(i).getKey().equals(key)) {
-                return entries.get(i).getValue();
+        if (containsKey(key)) {
+            for (int i = 0; i < entries.size(); i++) {
+                if (entries.get(i).getKey().equals(key)) {
+                    V temp = entries.get(i).getValue();
+                    entries.get(i).setValue(value);
+                    return temp;
+                }
             }
+        } else {
+            entries.add(new Entry<>(key, value));
         }
         return null;
 
@@ -81,23 +87,50 @@ public class TUMMapImplementation<K,V> implements TUMMap<K,V>{
     @Override
     public V replace(K key, V value) {
         if (containsKey(key)) {
-            for (int i = entries.size()-2; i >= 0; i--) {
+            for (int i = entries.size()-1; i >= 0; i--) {
                 if (entries.get(i).getKey().equals(key)) {
                     V temp = entries.get(i).getValue();
                     entries.get(i).setValue(value);
                     return temp;
                 }
             }
-        } else {
-            put(key,value);
         }
         return null;
     }
 
     public V getValueForLargestKey(){
-        return null;
+        if (entries.size() > 0) {
+            K maxim = entries.get(0).getKey();
+            for (int i = 1; i < entries.size(); i++) {
+                if (entries.get(i).getKey().compareTo(maxim) >= 0) {
+                    maxim = entries.get(i).getKey();
+                }
+            }
+            return get(maxim);
+        } else {
+            return null;
+        }
     }
     public List<K> getKeysForMatchingValues(){
-        return null;
+        List<K> ks = new ArrayList<>();
+        Pattern pattern = Pattern.compile("^[a-z]{2}[1-9]{2}[a-z]{3}$");
+        for (int i = 0; i <entries.size(); i++) {
+            if (entries.get(i).getValue() instanceof String) {
+                if (pattern.matcher((String)entries.get(i).getValue()).find()) {
+                    ks.add(entries.get(i).getKey());
+                }
+            }
+        }
+        return ks;
+    }
+
+    @Override
+    public String toString() {
+        String s = new String("Map");
+        for (int i = 0; i < entries.size(); i++) {
+            s += "\nkey " + entries.get(i).getKey();
+            s+="\nvalue " + entries.get(i).getValue() + "\n";
+        }
+        return s;
     }
 }

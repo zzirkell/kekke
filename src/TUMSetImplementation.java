@@ -2,8 +2,9 @@ import java.util.ArrayList;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
-public class TUMSetImplementation<V> implements TUMSet<V> {
+public class TUMSetImplementation<V extends Comparable<V>> implements TUMSet<V> {
     private ArrayList<V> values;
 
     public TUMSetImplementation(ArrayList<V> values) {
@@ -91,14 +92,48 @@ public class TUMSetImplementation<V> implements TUMSet<V> {
     }
 
     @Override
-    public Object addIfLarger(Object value, Object than) {
-        return null;
+    public V addIfLarger(V value, V than) {
+        if (value.compareTo(than) > 0) {
+            values.add(value);
+            return value;
+        } else {
+            return null;
+        }
     }
     public V getLargestValue(){
-        return null;
+        if (values.size() > 0) {
+            V maxim = values.get(0);
+            for (int i = 1; i < values.size(); i ++) {
+                if (values.get(i).compareTo(maxim) >= 0) {
+                    maxim = values.get(i);
+                }
+            }
+            return maxim;
+        } else {
+            return null;
+        }
     }
 
     public List<V> getValuesMatching(){
-        return null;
+        List<V> vs = new ArrayList<>();
+        Pattern pattern = Pattern.compile("^[A-Z,a-z,\\.]+@(in.)?tum.de$");
+        for (int i = 0; i <values.size(); i++) {
+            if (values.get(i) instanceof String) {
+                if (pattern.matcher((String)values.get(i)).find()) {
+                    vs.add(values.get(i));
+                }
+            }
+        }
+        return vs;
+
+    }
+
+    @Override
+    public String toString() {
+        String s = new String();
+        for (int i = 0; i < values.size(); i++) {
+            s+=values.get(i) + " , ";
+        }
+        return s;
     }
 }
